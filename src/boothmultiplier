@@ -1,0 +1,48 @@
+`timescale 1ns / 1ps
+
+module booth (
+
+    input  wire signed [7:0]  multiplicand,
+    input  wire signed [7:0]  multiplier,
+    output wire signed [15:0] product
+);
+
+    wire [2:0] enc_op0;
+    wire [2:0] enc_op1;
+    wire [2:0] enc_op2;
+    wire [2:0] enc_op3;
+
+    wire signed [15:0]  pp0;
+    wire signed [15:0] pp1;
+    wire signed [15:0] pp2;
+    wire signed [15:0] pp3;
+
+    enc_8bit encoder (
+        .multiplier(multiplier),
+        .enc_op0(enc_op0),
+        .enc_op1(enc_op1),
+        .enc_op2(enc_op2),
+        .enc_op3(enc_op3)
+    );
+
+    ppg_8bit pp_gen00 (
+        .multiplicand(multiplicand),
+        .enc_op0(enc_op0),
+        .enc_op1(enc_op1),
+        .enc_op2(enc_op2),
+        .enc_op3(enc_op3),
+        .pp0(pp0),
+        .pp1(pp1),
+        .pp2(pp2),
+        .pp3(pp3)
+    );
+
+    adder add00 (
+        .pp0(pp0),
+        .pp1(pp1),
+        .pp2(pp2),
+        .pp3(pp3),
+        .sum(product)
+    );
+
+endmodule
